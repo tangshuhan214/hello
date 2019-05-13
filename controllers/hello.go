@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/astaxie/beego"
 	"hello/business"
 )
@@ -11,7 +12,7 @@ type HelloControllers struct {
 }
 
 func (hello *HelloControllers) ActionFunc() {
-	action := hello.Ctx.Input.Param(":action")
+	//action := hello.Ctx.Input.Param(":action")
 	//接收JSON装入一个MAP中key为string value为空接口interface{}
 	/*data := hello.Ctx.Input.RequestBody
 	aaa := map[string]interface{}{}
@@ -37,40 +38,55 @@ func (hello *HelloControllers) ActionFunc() {
 	//hello.ServeJSON()
 
 	data := hello.Ctx.Input.RequestBody
-	aaa := map[string]interface{}{}
-	_ = json.Unmarshal(data, &aaa)
+	params := map[string]interface{}{}
+	_ = json.Unmarshal(data, &params)
 
-	myChan := make(chan map[string]interface{}, 2)
+	urlChan := make(chan map[string]interface{}, 2)
+	url := beego.AppConfig.String("urls")
+	PostJson(url, data, urlChan)
+	respData := <- urlChan
+
+	list := respData["result"].(map[string]interface{})["list"].([]interface{})
+
+	for _, value := range list {
+		i := value.(map[string]interface{})
+		fmt.Print(i["id"].(string) + "\n")
+	}
+
+	/*myChan := make(chan map[string]interface{}, 2)
 	userBiz := NewUserFactory().CreateUserFactory("userBiz")
 
 	resp := map[string]interface{}{}
 	if action == "getUser" {
-		go userBiz.TimeOut()
-		go userBiz.GetUserBiz(aaa, myChan)
+		go userBiz.TimeOut(myChan)
+		go userBiz.GetUserBiz(params, myChan)
 		resp = <- myChan
+		httpResp := <- myChan
+		fmt.Print(httpResp)
 		close(myChan)
-	}
-	hello.Data["json"] = resp
+	}*/
+	hello.Data["json"] = list
 	hello.ServeJSON()
 
 }
 
 type UserInter interface {
 	GetUserBiz(aaa map[string]interface{}, c chan map[string]interface{})
-	TimeOut()
+	TimeOut(c chan map[string]interface{})
 }
 
 type UserFactory struct {
-
 }
 
 func NewUserFactory() *UserFactory {
 	return &UserFactory{}
 }
 
-func (this *UserFactory)CreateUserFactory(userAction string) UserInter {
+func (this *UserFactory) CreateUserFactory(userAction string) UserInter {
 	if userAction == "userBiz" {
 		return &business.UserBiz{}
+	} else if userAction == "payBiz" {
+		return &business.PayBiz{}
 	}
 	return nil
 }

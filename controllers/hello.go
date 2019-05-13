@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"hello/business"
+	"hello/common"
 )
 
 type HelloControllers struct {
@@ -41,11 +42,10 @@ func (hello *HelloControllers) ActionFunc() {
 	params := map[string]interface{}{}
 	_ = json.Unmarshal(data, &params)
 
-	urlChan := make(chan map[string]interface{}, 2)
 	url := beego.AppConfig.String("urls")
-	PostJson(url, data, urlChan)
-	respData := <- urlChan
+	respData := common.PostJson(url, data)
 
+	//GO语言的强转，一次只能转一个类型，一步一步的来
 	list := respData["result"].(map[string]interface{})["list"].([]interface{})
 
 	for _, value := range list {

@@ -27,7 +27,7 @@ func init() {
 	// orm.RegisterDriver("mysql", orm.DR_MySQL)
 	// mysql / sqlite3 / postgres 这三种是默认已经注册过的，所以可以无需设置
 	//注册数据库 ORM 必须注册一个别名为 default 的数据库，作为默认使用
-	_ = orm.RegisterDataBase("default", "mysql", "root123:root123@tcp(127.0.0.1:3306)/sports")
+	_ = orm.RegisterDataBase("default", "mysql", "root:123456@tcp(192.168.10.220:3306)/qpay?charset=utf8&loc=Local")
 	//注册模型
 	orm.RegisterModel(new(models.User))
 	//自动创建表 参数二为是否开启创建表   参数三是否更新表

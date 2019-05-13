@@ -45,7 +45,7 @@ func (hello *HelloControllers) ActionFunc() {
 
 	resp := map[string]interface{}{}
 	if action == "getUser" {
-		go business.Timeout()
+		go userBiz.TimeOut()
 		go userBiz.GetUserBiz(aaa, myChan)
 		resp = <- myChan
 		close(myChan)

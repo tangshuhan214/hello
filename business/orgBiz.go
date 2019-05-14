@@ -6,7 +6,8 @@ import (
 	"strings"
 )
 
-func GetOrgInfo(params map[string]interface{}) map[string]interface{} {
+//查询机构列表，一次多个条目
+func GetOrgInfo(params map[string]interface{}, c chan map[string]interface{}) {
 	qb, _ := orm.NewQueryBuilder("mysql")
 
 	str := "1=1"
@@ -22,9 +23,7 @@ func GetOrgInfo(params map[string]interface{}) map[string]interface{} {
 	qb.Select("*").From("p_org_info").Where(str).Limit(int(params["limit"].(float64))).Offset(int(params["start"].(float64)))
 	var orgInfos []models.POrgInfo
 	_, _ = orm.NewOrm().Raw(qb.String()).QueryRows(&orgInfos)
-
-
-
 	resp := map[string]interface{}{"root": &orgInfos, "total": len(orgInfos), "status": 200}
-	return resp
+	//time.Sleep(5 * time.Second)
+	c <- resp
 }

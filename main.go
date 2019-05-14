@@ -1,15 +1,21 @@
 package main
 
 import (
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/plugins/cors"
+	"github.com/robfig/cron"
+	"hello/common"
 	"hello/models"
 	_ "hello/routers"
 )
 
+var SafeMap = common.NewBeeMap()
+
 func main() {
-	beego.Run()
+
+	//TimerTask()
 
 	//开启跨域访问
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
@@ -19,6 +25,8 @@ func main() {
 		ExposeHeaders:    []string{"Content-Length", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Content-Type"},
 		AllowCredentials: true,
 	}))
+
+	beego.Run()
 }
 
 //初始化
@@ -35,4 +43,18 @@ func init() {
 	orm.RegisterModel(new(models.POrgConfigDetail))
 	//自动创建表 参数二为是否开启创建表   参数三是否更新表
 	_ = orm.RunSyncdb("default", false, false)
+}
+
+//golang的定时任务这样触发
+func TimerTask() {
+	go func() {
+		crontab := cron.New()
+		crontab.AddFunc("0/5 * * * * ?", print)
+		crontab.Start()
+	}()
+}
+
+func print() {
+	SafeMap.Set("a", "b")
+	fmt.Print("=================================== \n")
 }

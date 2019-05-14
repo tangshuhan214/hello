@@ -29,8 +29,10 @@ func init() {
 	//注册数据库 ORM 必须注册一个别名为 default 的数据库，作为默认使用
 	_ = orm.RegisterDataBase("default", "mysql", beego.AppConfig.String("mysql"))
 	//注册模型
-	orm.RegisterModel(new(models.User))
+	/*orm.RegisterModel(new(models.User))*/
+	orm.RegisterModel(new(models.POrgInfo))
+	orm.RegisterModel(new(models.POrgConfig))
+	orm.RegisterModel(new(models.POrgConfigDetail))
 	//自动创建表 参数二为是否开启创建表   参数三是否更新表
 	_ = orm.RunSyncdb("default", false, false)
 }
-

@@ -13,7 +13,7 @@ type User struct {
 }
 
 type POrgInfo struct {
-	Id             int       `json:"id"orm:"column(id)"`                            // 组织机构id
+	Id             int       `json:"id"orm:"pk;auto;column(id)"`                    // 组织机构id
 	ErpOrgId       string    `json:"erpOrgId"orm:"column(erp_org_id)"`              // erp机构id
 	OrgCode        string    `json:"orgCode"orm:"column(org_code)"`                 // 机构编码
 	OrgName        string    `json:"orgName"orm:"column(org_name)"`                 // 机构名称

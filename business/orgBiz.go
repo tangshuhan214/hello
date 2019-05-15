@@ -2,6 +2,7 @@ package business
 
 import (
 	"github.com/astaxie/beego/orm"
+	"github.com/gitstliu/go-id-worker"
 	"hello/models"
 	"strings"
 )
@@ -26,4 +27,32 @@ func GetOrgInfo(params map[string]interface{}, c chan map[string]interface{}) {
 	resp := map[string]interface{}{"root": &orgInfos, "total": len(orgInfos), "status": 200}
 	//time.Sleep(5 * time.Second)
 	c <- resp
+}
+
+func InsertOrUpdateOrgInfo(orgInfo *models.POrgInfo, c chan map[string]interface{}) {
+	o := orm.NewOrm()
+	err := o.Begin() //开启事务控制
+	if orgInfo.Id != 0 {
+		o.Update(orgInfo)
+	} else {
+		//ID生成器19位
+		currWoker := &idworker.IdWorker{}
+		currWoker.InitIdWorker(100, 1)
+		newId, _ := currWoker.NextId()
+		id := int(newId)
+		orgInfo.Id = id
+		o.Insert(orgInfo) //这里用完这个指针，ID就变成了0
+		orgInfo.Id = id   //再次给ID赋值，以便前端获取
+	}
+	resp := map[string]interface{}{"root": orgInfo} //拼装返回参数map
+	if err != nil {
+		o.Rollback() //事务回滚
+		resp["status"] = 500
+		resp["msg"] = "新增失败！"
+	} else {
+		o.Commit() //事务提交
+		resp["status"] = 200
+		resp["msg"] = "新增成功！"
+	}
+	c <- resp //进入管道
 }

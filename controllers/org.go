@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"hello/business"
+	"hello/models"
 )
 
 type OrgControllers struct {
@@ -19,6 +20,10 @@ func (this *OrgControllers) ActionFunc() {
 	c := make(chan map[string]interface{})
 	if action == "getOrgInfo" {
 		go business.GetOrgInfo(params, c)
+	} else if action == "InsertOrgInfo" {
+		var orgInfo models.POrgInfo
+		json.Unmarshal(this.Ctx.Input.RequestBody, &orgInfo)
+		go business.InsertOrUpdateOrgInfo(&orgInfo, c)
 	}
 	resp := <-c
 	this.Data["json"] = resp

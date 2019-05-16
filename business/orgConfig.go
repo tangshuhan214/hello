@@ -20,9 +20,9 @@ func GetOrgInfoConfig(orgId int) []map[string]interface{} {
 	var list []models.POrgConfig
 	_, _ = orm.NewOrm().Raw(qb.String()).QueryRows(&list)
 
-	finalMap := common.Struct2Map(list)
+	finalMap := common.StructSlice2Map(list)
 	for _, oc := range finalMap {
-		oc["configDetails"] = GetOrgInfoConfigDetail(int(oc["id"].(float64)))
+		oc["configDetails"] = GetOrgInfoConfigDetail(oc["id"].(int))
 	}
 
 	return finalMap

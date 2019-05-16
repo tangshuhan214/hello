@@ -3,7 +3,10 @@ package business
 import (
 	"github.com/astaxie/beego/orm"
 	"github.com/gitstliu/go-id-worker"
+	"hello/common"
 	"hello/models"
+	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -14,7 +17,7 @@ func GetOrgInfo(params map[string]interface{}, c chan map[string]interface{}) {
 	str := "1=1"
 
 	if params["id"] != nil {
-		str += " AND id = " + params["id"].(string)
+		str += " AND id = " + strconv.Itoa(int(params["id"].(float64)))
 	}
 	if params["name"] != nil {
 		str += " AND org_name like '%" + strings.Trim(params["orgName"].(string), " ") + "%'"
@@ -24,9 +27,75 @@ func GetOrgInfo(params map[string]interface{}, c chan map[string]interface{}) {
 	qb.Select("*").From("p_org_info").Where(str).Limit(int(params["limit"].(float64))).Offset(int(params["start"].(float64)))
 	var orgInfos []models.POrgInfo
 	_, _ = orm.NewOrm().Raw(qb.String()).QueryRows(&orgInfos)
-	resp := map[string]interface{}{"root": &orgInfos, "total": len(orgInfos), "status": 200}
+
+	finalMap := common.Struct2Map(orgInfos)
+	for _, value := range finalMap {
+		config := GetOrgInfoConfig(int(value["id"].(float64)))
+		if config != nil {
+			value["configDetails"] = config[0]["configDetails"]
+			slice := splitSlice(config[0]["configDetails"])
+			for _, value2 := range slice {
+				if len(value2) < 5 {
+					value["weixin_status"] = 0
+				} else {
+					for _, value3 := range value2 {
+						if value3.(models.POrgConfigDetail).KeyName == "" && value3.(models.POrgConfigDetail).KeyValue == "" {
+							value["weixin_status"] = 0
+							break
+						}
+						value["weixin_status"] = 1
+					}
+				}
+			}
+
+		} else {
+			value["weixin_status"] = 0
+			value["alipay_status"] = 0
+			value["pos_status"] = 0
+			value["social_status"] = 0
+			value["print_ip"] = 0
+			value["xianjin_status"] = 0
+		}
+	}
+
+	//var aa = map[string]interface{}{"aaa": "1", "bbb": "2", "ccc": "3"}
+	//var bb = map[string]interface{}{"aaa": "1", "bbb": "4", "ccc": "6"}
+	//var cc = map[string]interface{}{"aaa": "1", "bbb": "6", "ccc": "6"}
+	//var dd = []map[string]interface{}{aa, bb, cc}
+	//slice := splitSlice(dd)
+	//fmt.Print(slice)
+
+	resp := map[string]interface{}{"root": &finalMap, "total": len(orgInfos), "status": 200}
 	//time.Sleep(5 * time.Second)
 	c <- resp
+}
+
+//切片分组算法，根据属性进行分组，返回一个切片
+func splitSlice(list interface{}) [][]interface{} {
+	v := reflect.ValueOf(list) //使用断言机制判断当前传入类型
+	if v.Kind() != reflect.Slice {
+		panic("方法体需要接收一个切片类型") //不是切片立即抛错
+	}
+	l := v.Len()
+	ret := make([]interface{}, l) //开始将传入切片转换为[]interface{}类型
+	for i := 0; i < l; i++ {
+		ret[i] = v.Index(i).Interface()
+	}
+
+	returnData := make([][]interface{}, 0)
+	i := 0
+	var j int
+	for {
+		if i >= len(ret) {
+			break
+		}
+		for j = i + 1; j < len(ret) && ret[i].(models.POrgConfigDetail).ValueType == ret[j].(models.POrgConfigDetail).ValueType; j++ {
+		}
+
+		returnData = append(returnData, ret[i:j])
+		i = j
+	}
+	return returnData
 }
 
 func InsertOrUpdateOrgInfo(orgInfo *models.POrgInfo, c chan map[string]interface{}) {

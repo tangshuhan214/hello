@@ -31,33 +31,26 @@ func GetOrgInfo(params map[string]interface{}, c chan map[string]interface{}) {
 	finalMap := common.StructSlice2Map(orgInfos)
 	for _, value := range finalMap {
 		config := GetOrgInfoConfig(value["id"].(int))
+		value["weixin_status"] = 0
+		value["alipay_status"] = 0
+		value["pos_status"] = 0
+		value["social_status"] = 0
+		value["print_ip"] = 0
+		value["xianjin_status"] = 1
+
 		if config != nil {
 			slice := splitSlice(config[0]["configDetails"])
 			value["configDetails"] = slice
-			for key, value2 := range slice {
+			for key, configDetail := range slice {
 				if key == "weixin_pay" {
-					if len(value2) < 5 {
-						value["weixin_status"] = 0
-					} else {
-						for _, value3 := range value2 {
-							if value3.(models.POrgConfigDetail).KeyName == "" && value3.(models.POrgConfigDetail).KeyValue == "" {
-								value["weixin_status"] = 0
-								break
-							}
-							value["weixin_status"] = 1
-						}
-					}
+					value["weixin_status"] = checkConfig(configDetail, 5)
+				}
+
+				if key == "alipay_pay" {
+					value["alipay_status"] = checkConfig(configDetail, 7)
 				}
 
 			}
-
-		} else {
-			value["weixin_status"] = 0
-			value["alipay_status"] = 0
-			value["pos_status"] = 0
-			value["social_status"] = 0
-			value["print_ip"] = 0
-			value["xianjin_status"] = 0
 		}
 	}
 
@@ -92,6 +85,22 @@ func splitSlice(list interface{}) map[string][]interface{} {
 		i = j
 	}
 	return returnData
+}
+
+func checkConfig(list []interface{}, num int) int {
+	resp := 0
+	if len(list) < num {
+		resp = 0
+	} else {
+		for _, v := range list {
+			if v.(models.POrgConfigDetail).KeyName == "" && v.(models.POrgConfigDetail).KeyValue == "" {
+				resp = 0
+				break
+			}
+			resp = 1
+		}
+	}
+	return resp
 }
 
 func InsertOrUpdateOrgInfo(orgInfo *models.POrgInfo, c chan map[string]interface{}) {

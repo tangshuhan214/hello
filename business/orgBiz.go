@@ -50,6 +50,18 @@ func GetOrgInfo(params map[string]interface{}, c chan map[string]interface{}) {
 					value["alipay_status"] = checkConfig(configDetail, 7)
 				}
 
+				if key == "pos_pay" {
+					value["pos_status"] = checkConfig(configDetail, 6)
+				}
+
+				if key == "social_pay" {
+					value["social_status"] = checkConfig(configDetail, 1)
+				}
+
+				if key == "print_pay" {
+					value["print_status"] = checkConfig(configDetail, 1)
+				}
+
 			}
 		}
 	}

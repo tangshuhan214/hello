@@ -3,6 +3,7 @@ package common
 import (
 	"encoding/json"
 	"reflect"
+	"strconv"
 	"strings"
 	"unsafe"
 )
@@ -52,4 +53,20 @@ func accuracy(number json.Number) int {
 	idPointer := (*int)(unsafe.Pointer(&i))
 	idd16 := *idPointer
 	return idd16
+}
+
+func GetWhereSql(params map[string]interface{}) string {
+	if params == nil {
+		panic("请勿输入空map")
+	}
+	resp := ""
+	for key, value := range params {
+		switch v := value.(type) {
+		case string:
+			resp += " AND " + SnakeString(key) + " = '" + v + "'"
+		case int:
+			resp += " AND " + SnakeString(key) + " = " + strconv.Itoa(v)
+		}
+	}
+	return resp
 }

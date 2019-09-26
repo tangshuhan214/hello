@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
+	beeLogger "github.com/beego/bee/logger"
 	"hello/business"
 )
 
@@ -10,9 +11,10 @@ type PayControllers struct {
 	beego.Controller
 }
 
-func (this *PayControllers) ActionFunc() {
-	action := this.Ctx.Input.Param(":action")
-	data := this.Ctx.Input.RequestBody
+func (pay *PayControllers) ActionFunc() {
+	logger := beeLogger.Log
+	action := pay.Ctx.Input.Param(":action")
+	data := pay.Ctx.Input.RequestBody
 	params := map[string]interface{}{}
 	_ = json.Unmarshal(data, &params)
 	payInter := NewPayFactory().CreateUserFactory("alipay_pay")
@@ -23,9 +25,11 @@ func (this *PayControllers) ActionFunc() {
 		respData = payInter.InsertPay(params)
 	case "refund":
 		respData = payInter.RefundPay(params)
+	default:
+		logger.Error("未定义方法类型。")
 	}
-	this.Data["json"] = respData
-	this.ServeJSON()
+	pay.Data["json"] = respData
+	pay.ServeJSON()
 }
 
 type PayInter interface {

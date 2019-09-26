@@ -49,7 +49,7 @@ func init() {
 func TimerTask() {
 	go func() {
 		crontab := cron.New()
-		crontab.AddFunc("0/5 * * * * ?", print)
+		_, _ = crontab.AddFunc("0/5 * * * * ?", print)
 		crontab.Start()
 	}()
 }

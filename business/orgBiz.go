@@ -117,27 +117,27 @@ func checkConfig(list []interface{}, num int) int {
 
 func InsertOrUpdateOrgInfo(orgInfo *models.POrgInfo, c chan map[string]interface{}) {
 	o := orm.NewOrm()
-	o.Begin() //开启事务控制
+	_ = o.Begin() //开启事务控制
 
 	resp := map[string]interface{}{"root": orgInfo} //拼装返回参数map
-	common.TryCatch{}.Try(func() { //try catch 做异常捕获
+	common.TryCatch{}.Try(func() {                  //try catch 做异常捕获
 		if orgInfo.Id != 0 {
-			o.Update(orgInfo)
+			_, _ = o.Update(orgInfo)
 		} else {
 			//ID生成器19位
 			currWoker := &idworker.IdWorker{}
-			currWoker.InitIdWorker(100, 1)
+			_ = currWoker.InitIdWorker(100, 1)
 			newId, _ := currWoker.NextId()
 			id := int(newId)
 			orgInfo.Id = id
-			o.Insert(orgInfo) //这里用完这个指针，ID就变成了0
-			orgInfo.Id = id   //再次给ID赋值，以便前端获取
+			_, _ = o.Insert(orgInfo) //这里用完这个指针，ID就变成了0
+			orgInfo.Id = id          //再次给ID赋值，以便前端获取
 		}
-		o.Commit() //事务提交
+		_ = o.Commit() //事务提交
 		resp["status"] = 200
 		resp["msg"] = "新增成功！"
 	}).CatchAll(func(err error) {
-		o.Rollback() //事务回滚
+		_ = o.Rollback() //事务回滚
 		resp["status"] = 500
 		resp["msg"] = err.Error() //输出错误信息
 	}).Finally(func() {

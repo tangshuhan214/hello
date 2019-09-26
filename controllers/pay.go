@@ -44,7 +44,7 @@ func NewPayFactory() *PayFactory {
 	return &PayFactory{}
 }
 
-func (this *PayFactory) CreateUserFactory(payType string) PayInter {
+func (pay *PayFactory) CreateUserFactory(payType string) PayInter {
 	if payType == "alipay_pay" {
 		return &business.ZhiFuBaoBiz{}
 	} else if payType == "weixin_pay" {

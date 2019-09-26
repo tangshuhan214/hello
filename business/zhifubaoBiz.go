@@ -3,10 +3,11 @@ package business
 import (
 	"crypto/md5"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"github.com/astaxie/beego"
 	"hello/common"
+	"sort"
 )
 
 type ZhiFuBaoBiz struct {
@@ -14,8 +15,22 @@ type ZhiFuBaoBiz struct {
 
 func (this *ZhiFuBaoBiz) InsertPay(params map[string]interface{}) map[string]interface{} {
 	getConfig(&params)
+
+	var sslice []string
+	for key, _ := range params {
+		sslice = append(sslice, key)
+	}
+	sort.Strings(sslice)
+	//在将key输出
+	var check map[string]interface{}
+	for _, v := range sslice {
+		check[v] = params[v]
+	}
+
 	after, _ := json.Marshal(params)
-	params["CHECK_CODE"] = md5V(after)
+	mString := string(after)
+	params["CHECK_CODE"] = md5V(mString)
+
 	befor, _ := json.Marshal(params)
 	url := beego.AppConfig.String("payUrls")
 	respData := common.PostJson(url, befor)
@@ -41,10 +56,10 @@ func getConfig(params *map[string]interface{}) {
 	par["SIGN_TYPE"] = "RSA2"
 }
 
-func md5V(str []byte) string {
-	md5Ctx := md5.New()
-	md5Ctx.Write(str)
-	cipherStr := fmt.Sprintf("%x", md5Ctx.Sum(nil))
+func md5V(str string) string {
+	h := md5.New()
+	h.Write([]byte(str))
+	cipherStr := hex.EncodeToString(h.Sum(nil))
 	encodeString := base64.StdEncoding.EncodeToString([]byte(cipherStr))
 	return encodeString
 }

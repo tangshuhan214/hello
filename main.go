@@ -5,7 +5,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/plugins/cors"
-	"github.com/robfig/cron"
+	"github.com/astaxie/beego/toolbox"
 	"hello/common"
 	"hello/models"
 	_ "hello/routers"
@@ -15,7 +15,7 @@ var SafeMap = common.NewBeeMap()
 
 func main() {
 
-	//TimerTask()
+	TimerTask()
 
 	//开启跨域访问
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
@@ -47,11 +47,13 @@ func init() {
 
 //golang的定时任务这样触发
 func TimerTask() {
-	go func() {
-		crontab := cron.New()
-		_, _ = crontab.AddFunc("0/5 * * * * ?", print)
-		crontab.Start()
-	}()
+	tk := toolbox.NewTask("myTask", "0/3 * * * * ?", func() error { print(); return nil })
+	err := tk.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
+	toolbox.AddTask("myTask", tk)
+	toolbox.StartTask()
 }
 
 func print() {

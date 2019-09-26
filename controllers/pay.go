@@ -18,9 +18,10 @@ func (this *PayControllers) ActionFunc() {
 	payInter := NewPayFactory().CreateUserFactory("alipay_pay")
 
 	var respData map[string]interface{}
-	if action == "pay" {
+	switch action {
+	case "pay":
 		respData = payInter.InsertPay(params)
-	} else if action == "refund" {
+	case "refund":
 		respData = payInter.RefundPay(params)
 	}
 	this.Data["json"] = respData

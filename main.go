@@ -15,7 +15,7 @@ var SafeMap = common.NewBeeMap()
 
 func main() {
 
-	TimerTask()
+	//TimerTask()
 
 	//开启跨域访问
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{

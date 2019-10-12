@@ -1,13 +1,9 @@
 package controllers
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/axgle/mahonia"
-	"golang.org/x/text/encoding/simplifiedchinese"
-	"golang.org/x/text/transform"
-	"io/ioutil"
 	"net"
 	"os"
 )
@@ -54,8 +50,8 @@ func sender(conn *net.TCPConn) (resp string) {
 	}
 	buffer := make([]byte, 1024)
 	msg, err := conn.Read(buffer) //接受服务器信息
-	data, _ := ioutil.ReadAll(transform.NewReader(bytes.NewReader(buffer[:msg]), simplifiedchinese.GBK.NewEncoder()))
-	result := mahonia.NewEncoder("GBK").ConvertString(string(data))
+	//data, _ := ioutil.ReadAll(transform.NewReader(bytes.NewReader(buffer[:msg]), simplifiedchinese.GBK.NewEncoder()))
+	result := mahonia.NewEncoder("gb2312").ConvertString(string(buffer[:msg]))
 	fmt.Println(conn.RemoteAddr().String(), "服务器反馈：", result, msgBack, "；实际发送了", len(words))
 	_, _ = conn.Write([]byte("ok")) //在告诉服务器，它的反馈收到了。
 	return result

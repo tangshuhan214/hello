@@ -29,8 +29,9 @@ func GetOrgInfo(params map[string]interface{}, c chan map[string]interface{}) {
 	_, _ = orm.NewOrm().Raw(qb.String()).QueryRows(&orgInfos)
 
 	finalMap := common.StructSlice2Map(orgInfos)
+	wcx := new(Wcx)
 	for _, value := range finalMap {
-		config := GetOrgInfoConfig(value["id"].(int))
+		config := wcx.GetOrgInfoConfig(value["id"].(int))
 		value["weixin_status"] = 0
 		value["alipay_status"] = 0
 		value["pos_status"] = 0

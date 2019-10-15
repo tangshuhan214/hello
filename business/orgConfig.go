@@ -7,7 +7,10 @@ import (
 	"strconv"
 )
 
-func GetOrgInfoConfig(orgId int) []map[string]interface{} {
+type Wcx struct {
+}
+
+func (wcx *Wcx) GetOrgInfoConfig(orgId int) []map[string]interface{} {
 	qb, _ := orm.NewQueryBuilder("mysql")
 	str := "1=1"
 
@@ -26,4 +29,14 @@ func GetOrgInfoConfig(orgId int) []map[string]interface{} {
 	}
 
 	return finalMap
+}
+
+type SonWcx struct {
+	Wcx
+}
+
+func aaa() {
+	sonWcx := new(SonWcx)
+	sonWcx.Wcx.GetOrgInfoConfig(123)
+	sonWcx.GetOrgInfoConfig(123)
 }

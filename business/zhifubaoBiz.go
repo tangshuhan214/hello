@@ -33,7 +33,9 @@ func (this *ZhiFuBaoBiz) InsertPay(params map[string]interface{}) map[string]int
 
 	befor, _ := json.Marshal(params)
 	url := beego.AppConfig.String("payUrls")
-	respData := common.PostJson(url, befor)
+
+	httpClient := new(common.HttpClientCommon)
+	respData := httpClient.PostJson(url, befor)
 	return respData
 }
 
@@ -41,7 +43,9 @@ func (this *ZhiFuBaoBiz) RefundPay(params map[string]interface{}) map[string]int
 	getConfig(&params)
 	mjson, _ := json.Marshal(params)
 	url := beego.AppConfig.String("refundUrls")
-	respData := common.PostJson(url, mjson)
+
+	httpClient := new(common.HttpClientCommon)
+	respData := httpClient.PostJson(url, mjson)
 	return respData
 }
 

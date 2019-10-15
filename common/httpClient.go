@@ -8,8 +8,11 @@ import (
 	"time"
 )
 
+type HttpClientCommon struct {
+}
+
 // GO的PostJson方法，发送POST请求，参数要是一个JSON的BYTE字符集，返回一个MAP
-func PostJson(url string, data []byte) map[string]interface{} {
+func (httpClient *HttpClientCommon) PostJson(url string, data []byte) map[string]interface{} {
 	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(data))
 	req.Header.Set("Content-Type", "application/json")
 

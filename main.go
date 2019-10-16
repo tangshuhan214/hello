@@ -1,24 +1,44 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	"github.com/astaxie/beego/plugins/cors"
 	"github.com/astaxie/beego/toolbox"
 	"hello/common"
 	"hello/models"
 	_ "hello/routers"
+	"time"
 )
 
 var SafeMap = common.NewBeeMap()
 
 func main() {
 
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println("error:", err)
+		} else {
+			fmt.Print("123123123123123")
+		}
+	}()
+
+	fmt.Println("start")
+	param := map[string]interface{}{"shopId": "98296376706539898", "start": 0, "limit": 100}
+	data, _ := json.Marshal(param)
+	fmt.Print(time.Now())
+	respData := common.PostJsonOnly("http://qyt1902.jggyun.com:8607/pub/exception/queryItemInfo", data)
+	fmt.Print(time.Now())
+	mjson, _ := json.Marshal(respData)
+	mString := string(mjson)
+	fmt.Println(mString)
+	fmt.Println("stop")
+
 	//TimerTask()
 
 	//开启跨域访问
-	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
+	/*beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Authorization", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Content-Type"},
@@ -26,7 +46,7 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	beego.Run()
+	beego.Run()*/
 }
 
 //初始化

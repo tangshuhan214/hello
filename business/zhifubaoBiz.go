@@ -31,21 +31,17 @@ func (this *ZhiFuBaoBiz) InsertPay(params map[string]interface{}) map[string]int
 	mString := string(after)
 	params["CHECK_CODE"] = md5V(mString)
 
-	befor, _ := json.Marshal(params)
 	url := beego.AppConfig.String("payUrls")
 
-	httpClient := new(common.HttpClientCommon)
-	respData := httpClient.PostJson(url, befor)
+	respData := common.PostJson(url, params)
 	return respData
 }
 
 func (this *ZhiFuBaoBiz) RefundPay(params map[string]interface{}) map[string]interface{} {
 	getConfig(&params)
-	mjson, _ := json.Marshal(params)
 	url := beego.AppConfig.String("refundUrls")
 
-	httpClient := new(common.HttpClientCommon)
-	respData := httpClient.PostJson(url, mjson)
+	respData := common.PostJson(url, params)
 	return respData
 }
 

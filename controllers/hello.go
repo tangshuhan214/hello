@@ -43,7 +43,7 @@ func (hello *HelloControllers) ActionFunc() {
 	_ = json.Unmarshal(data, &params)
 
 	url := beego.AppConfig.String("urls")
-	respData := common.PostJson(url, data)
+	respData := common.PostJson(url, params)
 
 	//GO语言的强转，一次只能转一个类型，一步一步的来
 	list := respData["result"].(map[string]interface{})["list"].([]interface{})

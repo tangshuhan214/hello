@@ -8,8 +8,33 @@ import (
 	"hello/common"
 )
 
+// debug.SetMaxThreads(num + 1000) //设置最大线程数
+// 注册工作池，传入任务
+// 参数1 worker并发个数
+var PoolWork = common.NewWorkerPool(100 * 100 * 20)
+
 type HelloControllers struct {
 	beego.Controller
+}
+
+type Score struct {
+	Ctrl *HelloControllers
+}
+
+func (s *Score) Do() {
+	data := s.Ctrl.Ctx.Input.RequestBody
+	aaa := map[string]interface{}{}
+	_ = json.Unmarshal(data, &aaa)
+	fmt.Print(aaa)
+	s.Ctrl.Data["json"] = aaa
+	s.Ctrl.ServeJSON()
+}
+
+func (hello *HelloControllers) Goto() {
+	go func() {
+		sc := &Score{Ctrl: hello}
+		PoolWork.JobQueue <- sc
+	}()
 }
 
 func (hello *HelloControllers) ActionFunc() {

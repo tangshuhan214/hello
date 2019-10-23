@@ -1,22 +1,21 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	"github.com/astaxie/beego/plugins/cors"
 	"github.com/astaxie/beego/toolbox"
 	"hello/common"
+	"hello/controllers"
 	"hello/models"
 	_ "hello/routers"
-	"time"
 )
 
 var SafeMap = common.NewBeeMap()
 
 func main() {
-
-	defer func() {
+	/*defer func() {
 		if err := recover(); err != nil {
 			fmt.Println("error:", err)
 		} else {
@@ -33,12 +32,12 @@ func main() {
 	mjson, _ := json.Marshal(respData)
 	mString := string(mjson)
 	fmt.Println(mString)
-	fmt.Println("stop")
+	fmt.Println("stop")*/
 
 	//TimerTask()
 
 	//开启跨域访问
-	/*beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
+	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Authorization", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Content-Type"},
@@ -46,7 +45,8 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	beego.Run()*/
+	controllers.PoolWork.Run()
+	beego.Run()
 }
 
 //初始化

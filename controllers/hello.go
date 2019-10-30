@@ -23,10 +23,8 @@ type Score struct {
 
 func (s *Score) Do() {
 	data := s.Ctrl.Ctx.Input.RequestBody
-	aaa := map[string]interface{}{}
-	_ = json.Unmarshal(data, &aaa)
-	fmt.Print(aaa)
-	s.Ctrl.Data["json"] = aaa
+	param := common.ParamsInCtrl(data)
+	s.Ctrl.Data["json"] = param
 	s.Ctrl.ServeJSON()
 }
 

@@ -21,9 +21,10 @@ type Score struct {
 	Ctrl *HelloControllers
 }
 
+
 func (s *Score) Do() {
 	data := s.Ctrl.Ctx.Input.RequestBody
-	param := common.ParamsInCtrl(data)
+	param := common.ParamsInCtrl(data, map[string]interface{}{})
 	s.Ctrl.Data["json"] = param
 	s.Ctrl.ServeJSON()
 }

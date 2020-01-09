@@ -21,10 +21,10 @@ func NewQueue(size int) *FiberSliceUtils {
 func (in *FiberSliceUtils) ScatterSlice(data interface{}, do func(todo interface{}) interface{}) []interface{} {
 	v := reflect.ValueOf(data) //使用断言机制判断当前传入类型
 	if v.Kind() != reflect.Slice {
-		panic("方法体需要接收一个切片类型") //不是切片立即抛错
+		panic("方法体需要接收一个切片类型")
 	}
 	if data == nil {
-		panic("集合数据为空") //
+		panic("集合数据为空")
 	}
 	l := v.Len()
 	ret := make([]interface{}, l) //开始将传入切片转换为[]interface{}类型
@@ -34,7 +34,9 @@ func (in *FiberSliceUtils) ScatterSlice(data interface{}, do func(todo interface
 
 	for _, v := range ret {
 		go func(todo interface{}) {
+			//函数式接口异步处理切片内数据
 			resp := do(todo)
+			//装入并发安全通道
 			in.channel <- resp
 		}(v)
 	}

@@ -56,6 +56,5 @@ func NewScatterSlice(data interface{}, do func(todo interface{}) interface{}) []
 		}
 	}()
 	wg.Wait()
-	defer close(s.channel)
 	return s.resultSlice
 }

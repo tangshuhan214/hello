@@ -5,20 +5,20 @@ import (
 	"sync"
 )
 
-type QueueThreadUtils struct {
+type FiberSliceUtils struct {
 	channel     chan interface{}
 	resultSlice []interface{}
 }
 
-func NewQueue(size int) *QueueThreadUtils {
-	s := &QueueThreadUtils{
+func NewQueue(size int) *FiberSliceUtils {
+	s := &FiberSliceUtils{
 		channel:     make(chan interface{}, size),
 		resultSlice: make([]interface{}, 0),
 	}
 	return s
 }
 
-func (in *QueueThreadUtils) ScatterSlice(data interface{}, do func(todo interface{}) interface{}) []interface{} {
+func (in *FiberSliceUtils) ScatterSlice(data interface{}, do func(todo interface{}) interface{}) []interface{} {
 	v := reflect.ValueOf(data) //使用断言机制判断当前传入类型
 	if v.Kind() != reflect.Slice {
 		panic("方法体需要接收一个切片类型") //不是切片立即抛错

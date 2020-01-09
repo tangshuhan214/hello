@@ -10,7 +10,6 @@ import (
 )
 
 type UserBiz struct {
-
 }
 
 func (userBiz *UserBiz) TimeOut(c chan map[string]interface{}) {
@@ -19,7 +18,7 @@ func (userBiz *UserBiz) TimeOut(c chan map[string]interface{}) {
 	c <- map[string]interface{}{}
 }
 
-func (userBiz *UserBiz)GetUserBiz(params map[string]interface{}, c chan map[string]interface{}) {
+func (userBiz *UserBiz) GetUserBiz(params map[string]interface{}, c chan map[string]interface{}) {
 	qb, _ := orm.NewQueryBuilder("mysql")
 
 	str := "1=1"
@@ -72,7 +71,6 @@ func Struct2Slice(list interface{}) []map[string]interface{} {
 }
 
 type PayBiz struct {
-
 }
 
 func (payBiz *PayBiz) GetUserBiz(aaa map[string]interface{}, c chan map[string]interface{}) {
@@ -82,4 +80,3 @@ func (payBiz *PayBiz) GetUserBiz(aaa map[string]interface{}, c chan map[string]i
 func (payBiz *PayBiz) TimeOut(c chan map[string]interface{}) {
 	panic("implement me")
 }
- 

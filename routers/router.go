@@ -12,4 +12,6 @@ func init() {
 	beego.Router("/pay/?:action", &controllers.PayControllers{}, "post:ActionFunc")
 	beego.Router("/org/?:action", &controllers.OrgControllers{}, "post:ActionFunc")
 	beego.Router("/tcp/send", &controllers.TcpControllers{}, "post:TcpOnline")
+	beego.Router("/tcp/one", &controllers.TcpControllers{}, "post:One")
+	beego.Router("/tcp/two", &controllers.TcpControllers{}, "post:Two")
 }

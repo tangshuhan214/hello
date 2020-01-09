@@ -6,8 +6,8 @@ import (
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/plugins/cors"
 	"github.com/astaxie/beego/toolbox"
+	"github.com/eriklupander/eeureka"
 	"hello/common"
-	"hello/controllers"
 	"hello/models"
 	_ "hello/routers"
 )
@@ -45,8 +45,12 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	controllers.PoolWork.Run()
+	//controllers.PoolWork.Run()
 	beego.Run()
+}
+
+func enableEureka() {
+	eeureka.RegisterAt("http://localhost:10001","myMicroservice", "8000", "8001")
 }
 
 //初始化

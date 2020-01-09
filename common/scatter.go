@@ -48,7 +48,6 @@ func (in *QueueThreadUtils) ScatterSlice(data interface{}, do func(todo interfac
 				in.resultSlice = append(in.resultSlice, v)
 				wg.Done()
 			}
-
 		}
 	}()
 	wg.Wait()

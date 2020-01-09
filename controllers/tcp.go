@@ -35,13 +35,12 @@ func (tcp *TcpControllers) One() {
 }
 
 func (tcp *TcpControllers) Two() {
-	in := common.NewQueue(100)
 	ot := make([]string, 0)
 	for i := 0; i < 100; i++ {
 		ot = append(ot, strconv.Itoa(i)+"->")
 	}
 
-	c := in.ScatterSlice(ot, func(v interface{}) interface{} {
+	c := common.NewScatterSlice(ot, func(v interface{}) interface{} {
 		a := v.(string)
 		b := a + "========="
 		return b

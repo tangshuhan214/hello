@@ -1,6 +1,7 @@
 package common
 
 import (
+	"fmt"
 	"reflect"
 	"sync"
 )
@@ -31,6 +32,11 @@ func NewScatterSlice(data interface{}, do func(todo interface{}) interface{}) []
 
 	for _, v := range ret {
 		go func(todo interface{}) {
+			defer func() {
+				if err := recover(); err != nil {
+					fmt.Printf("%s\n", err)
+				}
+			}()
 			//函数式接口异步处理切片内数据
 			resp := do(todo)
 			//装入并发安全通道
@@ -50,5 +56,6 @@ func NewScatterSlice(data interface{}, do func(todo interface{}) interface{}) []
 		}
 	}()
 	wg.Wait()
+	defer close(s.channel)
 	return s.resultSlice
 }

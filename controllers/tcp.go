@@ -42,8 +42,7 @@ func (tcp *TcpControllers) Two() {
 
 	c := common.NewScatterSlice(ot, func(v interface{}) interface{} {
 		a := v.(string)
-		b := a + "========="
-		return b
+		return a + "========="
 	})
 
 	fmt.Println(len(c))

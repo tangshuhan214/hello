@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/context"
+	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/plugins/cors"
 	"github.com/astaxie/beego/toolbox"
@@ -45,12 +49,14 @@ func main() {
 		AllowCredentials: true,
 	}))
 
+	// 最后一个参数必须设置为false 不然无法打印数据
+	beego.InsertFilter("/*", beego.FinishRouter, FilterLog, false)
 	//controllers.PoolWork.Run()
 	beego.Run()
 }
 
 func enableEureka() {
-	eeureka.RegisterAt("http://localhost:10001","myMicroservice", "8000", "8001")
+	eeureka.RegisterAt("http://localhost:10001", "myMicroservice", "8000", "8001")
 }
 
 //初始化
@@ -83,4 +89,32 @@ func TimerTask() {
 func print() {
 	SafeMap.Set("a", "b")
 	fmt.Print("=================================== \n")
+}
+
+// 添加日志拦截器
+var FilterLog = func(ctx *context.Context) {
+	addr := ctx.Request.RemoteAddr
+	url, _ := json.Marshal(ctx.Input.Data()["RouterPattern"])
+	data := ctx.Input.RequestBody
+	params := map[string]interface{}{}
+	_ = json.Unmarshal(data, &params)
+	d, _ := json.Marshal(params)
+	val, _ := marshalInner(ctx.Input.Data()["json"])
+	divider := " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	topDivider := "┌" + divider
+	middleDivider := "├" + divider
+	bottomDivider := "└" + divider
+	outputStr := "\n" + topDivider + "\n│ 请求IP:" + addr + "\n│ 请求地址:" + string(url) + "\n" + middleDivider + "\n│ 请求参数:" + string(d) + "\n│ 返回数据:" + string(val) + bottomDivider
+	logs.Info(outputStr)
+}
+
+//序列化
+func marshalInner(data interface{}) ([]byte, error) {
+	bf := bytes.NewBuffer([]byte{})
+	jsonEncoder := json.NewEncoder(bf)
+	jsonEncoder.SetEscapeHTML(false)
+	if err := jsonEncoder.Encode(data); err != nil {
+		return nil, err
+	}
+	return bf.Bytes(), nil
 }

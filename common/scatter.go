@@ -1,7 +1,6 @@
 package common
 
 import (
-	"fmt"
 	"github.com/astaxie/beego/logs"
 	"reflect"
 	"sync"
@@ -30,11 +29,6 @@ func NewScatterSlice(data interface{}, do func(todo interface{}) interface{}) []
 
 	for i := 0; i < l; i++ {
 		go func(todo interface{}) {
-			defer func() {
-				if err := recover(); err != nil {
-					fmt.Printf("%s\n", err)
-				}
-			}()
 			//函数式接口异步处理切片内数据
 			resp := do(todo)
 			//装入并发安全通道

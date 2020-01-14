@@ -33,7 +33,7 @@ func NewScatterSlice(data interface{}, do func(todo interface{}) interface{}) []
 			resp := do(todo)
 			//装入并发安全通道
 			channel <- resp
-		}(v)
+		}(v.Index(i).Interface())
 	}
 
 	var wg sync.WaitGroup

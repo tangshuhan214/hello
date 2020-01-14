@@ -18,10 +18,10 @@ func NewScatterSlice(data interface{}, do func(todo interface{}) interface{}) []
 	if v.Kind() != reflect.Slice {
 		panic("方法体需要接收一个切片类型")
 	}
-	if data == nil {
+	l := v.Len()
+	if l == 0 {
 		panic("集合数据为空")
 	}
-	l := v.Len()
 
 	//并发安全通道，用于保存处理完毕的数据体
 	channel := make(chan interface{}, l)

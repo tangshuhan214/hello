@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-func NewScatterSlice(data interface{}, do func(todo interface{}) interface{}) (resultSlice []interface{}, e error) {
+func NewScatterSlice(data interface{}, do func(todo interface{}) interface{}) (result []interface{}, e error) {
 	defer func() {
 		if err := recover(); err != nil {
 			e = errors.New(err.(string))
@@ -40,11 +40,11 @@ func NewScatterSlice(data interface{}, do func(todo interface{}) interface{}) (r
 		for {
 			select {
 			case v := <-channel:
-				resultSlice = append(resultSlice, v)
+				result = append(result, v)
 				wg.Done()
 			}
 		}
 	}()
 	wg.Wait()
-	return resultSlice, e
+	return result, e
 }

@@ -9,7 +9,7 @@ import (
 func NewScatterSlice(data interface{}, do func(todo interface{}) interface{}) []interface{} {
 	defer func() {
 		if err := recover(); err != nil {
-			logs.Info("%s\n", err)
+			logs.Error("%s\n", err)
 		}
 	}()
 

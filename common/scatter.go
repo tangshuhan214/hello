@@ -2,31 +2,28 @@ package common
 
 import (
 	"errors"
-	"github.com/astaxie/beego/logs"
 	"reflect"
 	"sync"
 )
 
-func NewScatterSlice(data interface{}, do func(todo interface{}) interface{}) ([]interface{}, error) {
+func NewScatterSlice(data interface{}, do func(todo interface{}) interface{}) (resultSlice []interface{}, e error) {
 	defer func() {
 		if err := recover(); err != nil {
-			logs.Error("%s\n", err)
+			e = errors.New(err.(string))
 		}
 	}()
 
 	v := reflect.ValueOf(data) //使用断言机制判断当前传入类型
 	if v.Kind() != reflect.Slice {
-		return nil, errors.New("方法体需要接收一个切片类型")
+		panic("方法体需要接收一个切片类型")
 	}
 	l := v.Len()
 	if l == 0 {
-		return nil, errors.New("集合数据为空")
+		panic("集合数据为空")
 	}
 
 	//并发安全通道，用于保存处理完毕的数据体
 	channel := make(chan interface{}, l)
-	//用于返回的数据切片
-	resultSlice := make([]interface{}, 0)
 
 	for i := 0; i < l; i++ {
 		go func(todo interface{}) {
@@ -49,5 +46,5 @@ func NewScatterSlice(data interface{}, do func(todo interface{}) interface{}) ([
 		}
 	}()
 	wg.Wait()
-	return resultSlice, nil
+	return resultSlice, e
 }

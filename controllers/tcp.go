@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/cache"
+	"github.com/astaxie/beego/logs"
 	"github.com/axgle/mahonia"
 	"hello/common"
 	"net"
@@ -40,10 +41,13 @@ func (tcp *TcpControllers) Two() {
 		ot = append(ot, strconv.Itoa(i)+"->")
 	}
 
-	c := common.NewScatterSlice(ot, func(v interface{}) interface{} {
+	c, e := common.NewScatterSlice(ot, func(v interface{}) interface{} {
 		a := v.(string)
 		return a + "========="
 	})
+	if e != nil {
+		logs.Error(e)
+	}
 
 	fmt.Println(len(c))
 

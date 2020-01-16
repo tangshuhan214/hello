@@ -12,6 +12,7 @@ require (
 	github.com/gitstliu/log4go v0.0.0-20180109082532-d146e6b86faa
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/myesui/uuid v1.0.0 // indirect
+	github.com/pkg/errors v0.8.0
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
 	github.com/smartystreets/goconvey v1.6.4

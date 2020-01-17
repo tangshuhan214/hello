@@ -34,7 +34,7 @@ func NewScatterSlice(data interface{}, do func(todo interface{}) interface{}) (r
 		}(v.Index(i).Interface())
 	}
 
-	var wg sync.WaitGroup
+	wg := new(sync.WaitGroup)
 	wg.Add(cap(channel))
 	go func() {
 		for {

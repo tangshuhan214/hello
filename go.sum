@@ -62,6 +62,10 @@ github.com/syndtr/goleveldb v0.0.0-20181127023241-353a9fca669c/go.mod h1:Z4AUp2K
 github.com/twinj/uuid v1.0.0 h1:fzz7COZnDrXGTAOHGuUGYd6sG+JMq+AoE7+Jlu0przk=
 github.com/twinj/uuid v1.0.0/go.mod h1:mMgcE1RHFUFqe5AfiwlINXisXfDGro23fWdPUfOMjRY=
 github.com/wendal/errors v0.0.0-20130201093226-f66c77a7882b/go.mod h1:Q12BUT7DqIlHRmgv3RskH+UCM/4eqVMgI0EMmlSpAXc=
+github.com/xuanbo/eureka-client v0.0.2 h1:nWWfHJ1/r4/N/z1wVuQ+tSJTCqu5nILwnAEYhgkSFTc=
+github.com/xuanbo/eureka-client v0.0.2/go.mod h1:/vg/F1SSdWTDcpC2+yO5cykzLqBD8GkRK1Cr0TIjQjM=
+github.com/xuanbo/requests v0.0.1 h1:XAHmPKJOt+1KFt00tvbBG6rZRnazdtKxeYspr3zloVg=
+github.com/xuanbo/requests v0.0.1/go.mod h1:MfvizmCT21wr9poHF7/7DCQeTVhkeOjIDqk1LsetWBs=
 golang.org/x/crypto v0.0.0-20181127143415-eb0de9b17e85/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2 h1:VklqNMn3ovrHsnt90PveolxSbWFaJdECFbxSq0Mqo2M=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=

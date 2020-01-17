@@ -10,7 +10,7 @@ import (
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/plugins/cors"
 	"github.com/astaxie/beego/toolbox"
-	"github.com/eriklupander/eeureka"
+	eureka "github.com/xuanbo/eureka-client"
 	"hello/common"
 	"hello/models"
 	_ "hello/routers"
@@ -19,6 +19,24 @@ import (
 var SafeMap = common.NewBeeMap()
 
 func main() {
+	// 链接Eureka
+	client := eureka.NewClient(&eureka.Config{
+		DefaultZone:           "http://localhost:10001/eureka/",
+		App:                   "MY-MICROSERVICE",
+		Port:                  8000,
+		RenewalIntervalInSecs: 10,
+		DurationInSecs:        30,
+		Metadata: map[string]interface{}{
+			"VERSION":              "0.1.0",
+			"NODE_GROUP_ID":        0,
+			"PRODUCT_CODE":         "DEFAULT",
+			"PRODUCT_VERSION_CODE": "DEFAULT",
+			"PRODUCT_ENV_CODE":     "DEFAULT",
+			"SERVICE_VERSION_CODE": "DEFAULT",
+		},
+	})
+	client.Start()
+
 	//TimerTask()
 
 	//开启跨域访问
@@ -34,10 +52,6 @@ func main() {
 	beego.InsertFilter("/*", beego.FinishRouter, FilterLog, false)
 	//controllers.PoolWork.Run()
 	beego.Run()
-}
-
-func enableEureka() {
-	eeureka.RegisterAt("http://localhost:10001", "myMicroservice", "8000", "8001")
 }
 
 //初始化

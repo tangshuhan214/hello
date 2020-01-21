@@ -7,6 +7,7 @@ import (
 	"github.com/astaxie/beego/cache"
 	"github.com/astaxie/beego/logs"
 	"github.com/axgle/mahonia"
+	"github.com/hashicorp/consul/api"
 	"hello/common"
 	"net"
 	"os"
@@ -52,6 +53,31 @@ func (tcp *TcpControllers) Two() {
 	fmt.Println(len(c))
 
 	tcp.Data["json"] = c
+	tcp.ServeJSON()
+}
+
+func (tcp *TcpControllers) Three() {
+	data := tcp.Ctx.Input.RequestBody
+	params := map[string]interface{}{}
+	_ = json.Unmarshal(data, &params)
+
+	/*conn, _ := grpc.Dial(
+		"",
+		grpc.WithInsecure(),
+		// 负载均衡，使用 consul 作服务发现
+		grpc.WithBalancer(grpc.RoundRobin(grpclb.NewConsulResolver(
+			"127.0.0.1:8500", "grpc.health.v1.add",
+		))),
+	)*/
+
+	client, _ := api.NewClient(api.DefaultConfig()) //非默认情况下需要设置实际的参数
+	services, _ := client.Agent().Services()
+	fmt.Println(services)
+
+
+
+	result := common.PostJson("http://"+services["spring-cloud-consul-producer-8511"].Address+":"+strconv.Itoa(services["spring-cloud-consul-producer-8511"].Port)+"/hello", params)
+	tcp.Data["json"] = result
 	tcp.ServeJSON()
 }
 

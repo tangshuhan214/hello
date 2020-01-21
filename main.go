@@ -10,8 +10,8 @@ import (
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/plugins/cors"
 	"github.com/astaxie/beego/toolbox"
-	"github.com/xuanbo/eureka-client"
 	"hello/common"
+	"hello/controllers"
 	"hello/models"
 	_ "hello/routers"
 )
@@ -20,7 +20,7 @@ var SafeMap = common.NewBeeMap()
 
 func main() {
 	// 链接Eureka
-	client := eureka_client.NewClient(&eureka_client.Config{
+	/*client := eureka_client.NewClient(&eureka_client.Config{
 		DefaultZone:           "http://localhost:10001/eureka/",
 		App:                   "MY-MICROSERVICE",
 		Port:                  8000,
@@ -35,7 +35,8 @@ func main() {
 			"SERVICE_VERSION_CODE": "DEFAULT",
 		},
 	})
-	client.Start()
+	client.Start()*/
+	controllers.RegisterServer()
 
 	//TimerTask()
 
